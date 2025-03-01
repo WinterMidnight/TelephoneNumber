@@ -1,31 +1,45 @@
-document.getElementById('check-btn').addEventListener('click', function() {
-    const input = document.getElementById('user-input').value.trim();
-    const resultsDiv = document.getElementById('results-div');
+const userInput = document.getElementById('user-input');
+const checkBtn = document.getElementById('check-btn');
+const clearBtn = document.getElementById('clear-btn');
+const resultsDiv = document.getElementById('results-div');
 
-    // Check if input is empty
-    if (!input) {
-        alert("Please provide a phone number");
-        return;
-    }
+// Function to validate the phone number
+const validateNumber = event => {
+    event.preventDefault(); // Prevent the form from submitting
+    const number = userInput.value.trim();
 
-    // Define regex for valid US phone numbers
-    const validPattern = /^(1\s?)?(\(\d{3}\)|\d{3})[\s-]?\d{3}[-]?\d{4}$/; // Matches valid formats
-    const invalidPattern = /[^0-9\s\(\)\-]/; // Contains invalid characters
-
-    // Check for valid number
-    if (validPattern.test(input)) {
-        resultsDiv.textContent = `Valid US number: ${input}`;
-    } else if (invalidPattern.test(input) || input.length < 10 || input.length > 15) {
-        // Check for invalid number
-        resultsDiv.textContent = `Invalid US number: ${input}`;
+    // Regular expressions for US phone numbers
+    const regex1 = /^1?\s?(?:\(\d{3}\)|\d{3})[-\s]?\d{3}[-\s]?\d{4}$/;
+    
+    if (userInput.value === ''){
+        return alert('Please provide a phone number');
+    } else if (regex1.test(number)) {
+        resultsDiv.classList.add('show');
+        resultsDiv.textContent = `Valid US number: ${number}`;
     } else {
-        // Fallback for any other invalid condition
-        resultsDiv.textContent = `Invalid US number: ${input}`;
+        resultsDiv.classList.add('show');
+        resultsDiv.textContent = `Invalid US number: ${number}`;
     }
-});
+    
+    userInput.value = '';
+    userInput.focus();
+    return;
+}
 
-// Clear button functionality
-document.getElementById('clear-btn').addEventListener('click', function() {
-    document.getElementById('results-div').textContent = '';
-    document.getElementById('user-input').value = '';
-});
+// Function to clear the phone number field
+const clearFields = event => {
+    event.preventDefault();
+    userInput.value = '';
+    resultsDiv.classList.remove('show');
+    resultsDiv.textContent = '';
+    userInput.focus(); // Focus the input field for the next input
+    return;
+}
+
+// Add event listeners to the buttons
+checkBtn.addEventListener('click', validateNumber);
+clearBtn.addEventListener('click', clearFields);
+
+validateNumber(); // Call the function to validate the phone number
+
+clearFields(); // Call the function to clear the phone number field
